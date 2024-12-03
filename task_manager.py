@@ -6,7 +6,7 @@ from pathlib import Path
 class TaskManager:
     def __init__(self, path: str = "tasks.json"):
         self.path = Path(path)
-        self.tasks = dict()
+        self.tasks = list(dict())
         self.modified: bool = False
 
         if not self.path.is_file():
@@ -27,6 +27,8 @@ class TaskManager:
 
     def add(self) -> None:
         self.modified = True
+        self.tasks.append({'id': self.first_avail_id, 'title': 'Изучить основы FastAPI', 'desc': 'Пройти документацию по FastAPI и создать простой проект', 'category': 'обучение', 'deadline': '2024-11-30', 'priority': 1, 'status': False})
+        self.first_avail_id += 1
         print("added")
 
     def delete(self, id_or_name: str) -> None:
@@ -42,16 +44,21 @@ class TaskManager:
     def find(self, keywords: list[str]) -> list[str]:
         return ["1 nastohe", "2 athodeu"]
 
-    def show(self, keywords: list[str] | None) -> list[str]:
-        return ["1 nastohe", "2 athodeu"]
+    def show(self, keywords: str | None) -> list[dict]:
+        return self.tasks
 
     def done(self, id_or_name: str) -> None:
         self.modified = True
         print("mark as done")
         
     def write(self) -> None:
-        if self.modified:
-            self.modified = False
-        print("written")
+        if not self.modified:
+            return
+
+        self.modified = False
+        with open(self.path, "w") as f:
+            json.dump(self.tasks, f)
+
+        print("written to file")
 
 

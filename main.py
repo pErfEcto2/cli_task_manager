@@ -1,12 +1,16 @@
+# here wont be many comments because the projech isnt that hard nor big
+
+
 from task_manager import TaskManager
 import lib
+
 
 t = TaskManager()
 
 user_input : list[str] = [""]
 
 while True:
-    user_input = lib.sanitized_input("^[hqwadcosf].*", "command(write h for help): ")
+    user_input = lib.sanitized_input("^(h|q|w|a|d\s.+|c\s.+|o\s.+|s(\s.+)?|f\s.+)$", "command (h for help): ")
 
     match user_input[0]:
         case "h":
@@ -17,7 +21,7 @@ a - add a new task
 d ID/name - delete a task 
 c ID/name - change a task 
 o ID/name - mark a task as done 
-s [CATEGORY] - show all tasks or only with given category
+s [CATEGORY] - show all tasks or only with given category (if several categories given only first is used)
 f [keyword1 keyword2 ...] - find tasks using keywords""")
         
         case "q":
@@ -31,32 +35,34 @@ f [keyword1 keyword2 ...] - find tasks using keywords""")
             t.add()
         
         case "d":
-            if len(user_input) != 2:
-                print("invalid input; write a name or an ID of a task to delete it")
-                continue
             t.delete(user_input[1])
         
         case "c":
-            if len(user_input) != 2:
-                print("invalid input; write a name or an ID of a task to change it")
-                continue
             t.change(user_input[1])
 
         case "o":
-            if len(user_input) != 2:
-                print("invalid input; write a name or an ID of a task to mark it as done")
-                continue
             t.done(user_input[1])
 
         case "s":
-            print(t.show(user_input[1:] if len(user_input) > 1 else None))
+            data = t.show(user_input[1] if len(user_input) > 1 else None)
+            match len(user_input):
+                case 0:
+                    print("no tasks yet")
+                case 1:
+                    print("all tasks:")
+                    for task in data:
+                        print(f"{task.get("id")} {task.get("title")}")
+                case _:
+                    print("found taskn:")
+                    for task in data:
+                        print(task) # add pretty print for tasks
 
         case "f":
-            if len(user_input) == 1:
-                print("invalid input; write at least one keyword")
-                continue
             print(t.find(user_input[1:]))
         
+        case "w":
+            t.write()
+
         case _:
             continue
 
