@@ -29,12 +29,12 @@ class TaskManager:
         self.modified = True
         print("added")
 
-    def delete(self, name: str) -> None:
+    def delete(self, id_or_name: str) -> None:
         self.modified = True
         print("deleted")
         pass
 
-    def change(self) -> None:
+    def change(self, id_or_name: str) -> None:
         self.modified = True
         print("changed")
         pass
@@ -42,7 +42,10 @@ class TaskManager:
     def find(self, keywords: list[str]) -> list[str]:
         return ["1 nastohe", "2 athodeu"]
 
-    def done(self, name: str) -> None:
+    def show(self, keywords: list[str] | None) -> list[str]:
+        return ["1 nastohe", "2 athodeu"]
+
+    def done(self, id_or_name: str) -> None:
         self.modified = True
         print("mark as done")
         
