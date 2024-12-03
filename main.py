@@ -35,7 +35,7 @@ f [keyword1 keyword2 ...] - find tasks using keywords""")
             t.add()
         
         case "d":
-            t.delete(user_input[1])
+            t.delete(" ".join(user_input[1:]))
         
         case "c":
             t.change(user_input[1])
@@ -44,21 +44,10 @@ f [keyword1 keyword2 ...] - find tasks using keywords""")
             t.done(user_input[1])
 
         case "s":
-            data = t.show(user_input[1] if len(user_input) > 1 else None)
-            match len(user_input):
-                case 0:
-                    print("no tasks yet")
-                case 1:
-                    print("all tasks:")
-                    for task in data:
-                        print(f"{task.get("id")} {task.get("title")}")
-                case _:
-                    print("found taskn:")
-                    for task in data:
-                        print(task) # add pretty print for tasks
+            lib.print_tasks(t.show(user_input[1] if len(user_input) > 1 else None))
 
         case "f":
-            print(t.find(user_input[1:]))
+            lib.print_tasks(t.find(user_input[1:]))
         
         case "w":
             t.write()

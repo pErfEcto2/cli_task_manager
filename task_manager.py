@@ -26,33 +26,51 @@ class TaskManager:
             self.first_avail_id = 1
 
     def add(self) -> None:
+        # TODO
         self.modified = True
-        self.tasks.append({'id': self.first_avail_id, 'title': 'Изучить основы FastAPI', 'desc': 'Пройти документацию по FastAPI и создать простой проект', 'category': 'обучение', 'deadline': '2024-11-30', 'priority': 1, 'status': False})
+        self.tasks.append({'id': self.first_avail_id, 'title': 'Изучить основы FastAPI', 'desc': 'Пройти документацию по FastAPI и создать простой проект', 'category': 'обучение', 'deadline': '2024-11-30', 'priority': 1, 'is_done': False})
         self.first_avail_id += 1
-        print("added")
 
     def delete(self, id_or_name: str) -> None:
         self.modified = True
-        print("deleted")
-        pass
+        if id_or_name.isdigit():
+            id = int(id_or_name)
+            for i, task in enumerate(self.tasks):
+                if task.get("id") == id:
+                    self.tasks.pop(i)
+                    break
+            else:
+                print("nothing to delete")
+        else:
+            name = id_or_name
+            for i, task in enumerate(self.tasks):
+                if task.get("title") == name:
+                    self.tasks.pop(i)
+                    break
+            else:
+                print("nothing to delete")
 
     def change(self, id_or_name: str) -> None:
+        # TODO
         self.modified = True
         print("changed")
-        pass
 
-    def find(self, keywords: list[str]) -> list[str]:
-        return ["1 nastohe", "2 athodeu"]
+    def find(self, keywords: list[str]) -> list[dict]:
+        # TODO
+        return self.tasks
 
-    def show(self, keywords: str | None) -> list[dict]:
+    def show(self, category: str | None) -> list[dict]:
+        # TODO
         return self.tasks
 
     def done(self, id_or_name: str) -> None:
+        # TODO
         self.modified = True
         print("mark as done")
         
     def write(self) -> None:
         if not self.modified:
+            print("already wrote")
             return
 
         self.modified = False
