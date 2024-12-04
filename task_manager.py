@@ -1,6 +1,6 @@
-from task import Task
 import json
 from pathlib import Path
+import lib
 
 
 class TaskManager:
@@ -26,14 +26,20 @@ class TaskManager:
             self.first_avail_id = 1
 
     def add(self) -> None:
-        # TODO
         self.modified = True
-        self.tasks.append({'id': self.first_avail_id, 'title': 'Изучить основы FastAPI', 'desc': 'Пройти документацию по FastAPI и создать простой проект', 'category': 'обучение', 'deadline': '2024-11-30', 'priority': 1, 'is_done': False})
+        title: str = " ".join(lib.sanitized_input(r"^\w.*$", "title: "))
+        desc: str = " ".join(lib.sanitized_input(promt="decsription: "))
+        category: str = " ".join(lib.sanitized_input(promt="category: "))
+        deadline: str = "".join(lib.sanitized_input(r"\d{2}-\d{2}-\d{4}", "deadline (dd-mm-yyyy): "))
+        priority: str = lib.sanitized_input("(high|medium|low)", "priority (high, medium or low): ")[0]
+        self.tasks.append({'id': self.first_avail_id, 'title': title, 'desc': desc, 'category': category, 
+                           'deadline': deadline, 'priority': priority, 'is_done': False})
         self.first_avail_id += 1
 
     def delete(self, id_or_name: str) -> None:
+        # deleting by category will delete tasks which isnt done, so i slightly changed it
         self.modified = True
-        if id_or_name.isdigit():
+        try:
             id = int(id_or_name)
             for i, task in enumerate(self.tasks):
                 if task.get("id") == id:
@@ -41,7 +47,7 @@ class TaskManager:
                     break
             else:
                 print("nothing to delete")
-        else:
+        except ValueError:
             name = id_or_name
             for i, task in enumerate(self.tasks):
                 if task.get("title") == name:
@@ -56,21 +62,46 @@ class TaskManager:
         print("changed")
 
     def find(self, keywords: list[str]) -> list[dict]:
-        # TODO
-        return self.tasks
+        res : list[dict] = list(dict())
+        
+        keywords = [x.lower() for x in keywords]
+
+        for task in self.tasks:
+            for keyword in keywords:
+                if keyword in task.get("title").lower() or keyword in task.get("desc").lower() or \
+                   keyword in task.get("category").lower():
+                       res.append(task)
+
+        return res
 
     def show(self, category: str | None) -> list[dict]:
-        # TODO
-        return self.tasks
+        res: list[dict] = list(dict())
+        if category is None:
+            res = self.tasks
+        else:
+            for task in self.tasks:
+                if category.lower() in task.get("category").lower():
+                    res.append(task)
+        return res
 
     def done(self, id_or_name: str) -> None:
-        # TODO
         self.modified = True
-        print("mark as done")
+        try:
+            id = int(id_or_name)
+            for i, task in enumerate(self.tasks):
+                if task.get("id") == id:
+                    self.tasks[i]["is_done"] = True
+                    break
+        except ValueError:
+            name = id_or_name
+            for i, task in enumerate(self.tasks):
+                if task.get("title") == name:
+                    self.tasks[i]["is_done"] = True
+                    break
         
     def write(self) -> None:
         if not self.modified:
-            print("already wrote")
+            print("already up to date")
             return
 
         self.modified = False
