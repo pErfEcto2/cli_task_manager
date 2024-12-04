@@ -17,7 +17,7 @@ class TaskManager:
         else:
             with open(self.path) as f:
                 if len(f.read()) != 0:
-                    f.seek(0) # reading file moves cursor; seek(0) = set cursor an the beginning
+                    f.seek(0) # reading file moves cursor; seek(0) = set cursor at the beginning
                     self.tasks = json.load(f)
 
         if len(self.tasks) != 0:
@@ -26,18 +26,26 @@ class TaskManager:
             self.first_avail_id = 1
 
     def add(self) -> None:
+        """
+        adds a new task
+        """
         self.modified = True
+        
         title: str = " ".join(lib.sanitized_input(r"^\w.*$", "title: "))
         desc: str = " ".join(lib.sanitized_input(promt="decsription: "))
         category: str = " ".join(lib.sanitized_input(promt="category: "))
         deadline: str = "".join(lib.sanitized_input(r"\d{2}-\d{2}-\d{4}", "deadline (dd-mm-yyyy): "))
         priority: str = lib.sanitized_input("(high|medium|low)", "priority (high, medium or low): ")[0]
+        
         self.tasks.append({'id': self.first_avail_id, 'title': title, 'desc': desc, 'category': category, 
                            'deadline': deadline, 'priority': priority, 'is_done': False})
         self.first_avail_id += 1
 
     def delete(self, id_or_name: str) -> None:
-        # deleting by category will delete tasks which isnt done, so i slightly changed it
+        """
+        deletes a task by its id or name
+        """
+        # deleting by category will delete tasks which isnt done as well, so i slightly changed the behavior
         self.modified = True
         try:
             id = int(id_or_name)
@@ -62,6 +70,9 @@ class TaskManager:
         print("changed")
 
     def find(self, keywords: list[str]) -> list[dict]:
+        """
+        finds and returns tasks with given keywords
+        """
         res : list[dict] = list(dict())
         
         keywords = [x.lower() for x in keywords]
@@ -75,6 +86,9 @@ class TaskManager:
         return res
 
     def show(self, category: str | None) -> list[dict]:
+        """
+        returns all tasks or with given category
+        """
         res: list[dict] = list(dict())
         if category is None:
             res = self.tasks
@@ -85,6 +99,9 @@ class TaskManager:
         return res
 
     def done(self, id_or_name: str) -> None:
+        """
+        marks a task as done
+        """
         self.modified = True
         try:
             id = int(id_or_name)
@@ -100,6 +117,9 @@ class TaskManager:
                     break
         
     def write(self) -> None:
+        """
+        writes tasks to a file
+        """
         if not self.modified:
             print("already up to date")
             return
