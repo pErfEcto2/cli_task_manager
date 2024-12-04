@@ -20,7 +20,10 @@ def print_tasks(tasks: list[dict]) -> None:
         return
 
     for task in tasks:
-        print(f"""{task.get("id")}: {task.get("title")} ({'done' if task.get("is_done") else 'not done'})\ndescription: {task.get("desc")}
-category: {task.get("category")}\ndeadline: {task.get("deadline")}
+        print(f"""{task.get("id")}: {task.get("title")} \
+({'done' if task.get("is_done") else 'not done'})
+description: {task.get("desc")}
+category: {task.get("category")}
+deadline: {task.get("deadline")}
 priority: {task.get("priority")}\n""")
 
